@@ -1,0 +1,26 @@
+# Dependencies
+/backend/_build/
+/backend/deps/
+/frontend/node_modules/
+/frontend/.next/
+
+# Generated
+/backend/*.ez
+/backend/cover/
+/backend/doc/
+/frontend/out/
+/frontend/next-env.d.ts
+
+# OS
+.DS_Store
+*.swp
+*.swo
+
+# IDE
+.vscode/
+.idea/
+
+# Env
+.env
+.env.local
+.env.*.local
