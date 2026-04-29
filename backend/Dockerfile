@@ -8,11 +8,11 @@
 #   2. `runner`   : minimal Debian image with only the release artifact
 
 ARG ELIXIR_VERSION=1.18.4
-ARG OTP_VERSION=27.3.4
-ARG DEBIAN_VERSION=bookworm-20250630-slim
+ARG OTP_VERSION=28.5
+ARG UBUNTU_VERSION=jammy-20260410
 
-ARG BUILDER_IMAGE="hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-debian-${DEBIAN_VERSION}"
-ARG RUNNER_IMAGE="debian:${DEBIAN_VERSION}"
+ARG BUILDER_IMAGE="hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-ubuntu-${UBUNTU_VERSION}"
+ARG RUNNER_IMAGE="ubuntu:jammy"
 
 # ============================================================================
 # Stage 1: Builder
