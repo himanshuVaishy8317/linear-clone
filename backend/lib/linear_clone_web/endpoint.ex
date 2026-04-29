@@ -1,6 +1,16 @@
 defmodule LinearCloneWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :linear_clone
 
+  # Module attributes are evaluated at compile time but stored as data, so
+  # regexes inside them work. Inline regex literals inside `plug` macro args
+  # do NOT work because Elixir cannot escape the compiled Regex struct's
+  # internal Reference into AST.
+  @cors_origins [
+    "http://localhost:3000",
+    "https://linear-clone-inky.vercel.app",
+    ~r{^https://linear-clone-.*\.vercel\.app$}
+  ]
+
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
   # Set :encryption_salt if you would also like to encrypt it.
@@ -46,15 +56,8 @@ defmodule LinearCloneWeb.Endpoint do
     pass: ["*/*"],
     json_decoder: Phoenix.json_library()
 
-  # Allowed origins are hardcoded for the POC. The regex covers any vercel.app
-  # preview/branch deployment under our project, which is fine for a POC.
-  # Tighten this list to specific URLs once we have a real custom domain.
   plug Corsica,
-    origins: [
-      "http://localhost:3000",
-      "https://linear-clone-inky.vercel.app",
-      ~r{^https://linear-clone-.*\.vercel\.app$}
-    ],
+    origins: @cors_origins,
     allow_headers: ["content-type", "authorization"],
     allow_methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
 
