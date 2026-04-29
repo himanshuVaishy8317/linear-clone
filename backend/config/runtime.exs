@@ -20,10 +20,8 @@ if System.get_env("PHX_SERVER") do
   config :linear_clone, LinearCloneWeb.Endpoint, server: true
 end
 
-config :linear_clone, LinearCloneWeb.Endpoint,
-  http: [port: String.to_integer(System.get_env("PORT", "4000"))]
-
 if config_env() == :prod do
+  port = String.to_integer(System.get_env("PORT", "4000"))
   database_url =
     System.get_env("DATABASE_URL") ||
       raise """
@@ -61,11 +59,12 @@ if config_env() == :prod do
   config :linear_clone, LinearCloneWeb.Endpoint,
     url: [host: host, port: 443, scheme: "https"],
     http: [
-      # Enable IPv6 and bind on all interfaces.
-      # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.
-      # See the documentation on https://hexdocs.pm/bandit/Bandit.html#t:options/0
-      # for details about using IPv6 vs IPv4 and loopback vs public addresses.
-      ip: {0, 0, 0, 0, 0, 0, 0, 0}
+      # Bind on all interfaces (IPv4 + IPv6) on Railway's injected PORT.
+      # Both port and ip MUST be in the SAME http: keyword list - Elixir's
+      # Config replaces nested keyword lists rather than deep-merging them,
+      # so splitting them across two config calls would drop one.
+      ip: {0, 0, 0, 0, 0, 0, 0, 0},
+      port: port
     ],
     secret_key_base: secret_key_base
 
