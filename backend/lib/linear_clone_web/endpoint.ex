@@ -47,7 +47,10 @@ defmodule LinearCloneWeb.Endpoint do
     json_decoder: Phoenix.json_library()
 
   plug Corsica,
-    origins: ["http://localhost:3000"],
+    origins:
+      (System.get_env("ALLOWED_ORIGINS") || "http://localhost:3000")
+      |> String.split(",", trim: true)
+      |> Enum.map(&String.trim/1),
     allow_headers: ["content-type", "authorization"],
     allow_methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
 
