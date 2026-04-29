@@ -1,14 +1,14 @@
 defmodule LinearCloneWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :linear_clone
 
-  # Module attributes are evaluated at compile time but stored as data, so
-  # regexes inside them work. Inline regex literals inside `plug` macro args
-  # do NOT work because Elixir cannot escape the compiled Regex struct's
-  # internal Reference into AST.
+  # Allowed CORS origins. Exact strings only - no regex, since plug macro
+  # arg escaping does not handle compiled Regex references. Add new Vercel
+  # preview URLs to this list as needed.
   @cors_origins [
     "http://localhost:3000",
     "https://linear-clone-inky.vercel.app",
-    ~r{^https://linear-clone-.*\.vercel\.app$}
+    "https://linear-clone-git-main-himanshu-7687s-projects.vercel.app",
+    "https://linear-clone-himanshu-7687s-projects.vercel.app"
   ]
 
   # The session will be stored in the cookie and signed,
