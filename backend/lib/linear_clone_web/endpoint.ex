@@ -46,25 +46,17 @@ defmodule LinearCloneWeb.Endpoint do
     pass: ["*/*"],
     json_decoder: Phoenix.json_library()
 
-  # CORS origins are evaluated at request time (not compile time) so changing
-  # the ALLOWED_ORIGINS env var on Railway takes effect without rebuilding.
-  # Plug options are captured at module-compile time, which is why the simpler
-  # `origins: System.get_env(...)` form did NOT work in Docker builds — the env
-  # var is unset during build, so origins was baked in as the local fallback.
+  # Allowed origins are hardcoded for the POC. The regex covers any vercel.app
+  # preview/branch deployment under our project, which is fine for a POC.
+  # Tighten this list to specific URLs once we have a real custom domain.
   plug Corsica,
-    origins: {__MODULE__, :allowed_origin?, []},
+    origins: [
+      "http://localhost:3000",
+      "https://linear-clone-inky.vercel.app",
+      ~r{^https://linear-clone-.*\.vercel\.app$}
+    ],
     allow_headers: ["content-type", "authorization"],
     allow_methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
-
-  @doc false
-  def allowed_origin?(origin) do
-    allowed =
-      (System.get_env("ALLOWED_ORIGINS") || "http://localhost:3000")
-      |> String.split(",", trim: true)
-      |> Enum.map(&String.trim/1)
-
-    "*" in allowed or origin in allowed
-  end
 
   plug Plug.MethodOverride
   plug Plug.Head
