@@ -46,13 +46,25 @@ defmodule LinearCloneWeb.Endpoint do
     pass: ["*/*"],
     json_decoder: Phoenix.json_library()
 
+  # CORS origins are evaluated at request time (not compile time) so changing
+  # the ALLOWED_ORIGINS env var on Railway takes effect without rebuilding.
+  # Plug options are captured at module-compile time, which is why the simpler
+  # `origins: System.get_env(...)` form did NOT work in Docker builds — the env
+  # var is unset during build, so origins was baked in as the local fallback.
   plug Corsica,
-    origins:
-      (System.get_env("ALLOWED_ORIGINS") || "http://localhost:3000")
-      |> String.split(",", trim: true)
-      |> Enum.map(&String.trim/1),
+    origins: {__MODULE__, :allowed_origin?, []},
     allow_headers: ["content-type", "authorization"],
     allow_methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
+
+  @doc false
+  def allowed_origin?(origin) do
+    allowed =
+      (System.get_env("ALLOWED_ORIGINS") || "http://localhost:3000")
+      |> String.split(",", trim: true)
+      |> Enum.map(&String.trim/1)
+
+    "*" in allowed or origin in allowed
+  end
 
   plug Plug.MethodOverride
   plug Plug.Head
